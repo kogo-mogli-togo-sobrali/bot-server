@@ -58,14 +58,15 @@ func (p *Processor) ParseRequest(request string) (*Response, error) {
 
 	switch msg.Text {
 	case "Газ":
-		resp.Categories = append(resp.Categories, Entity{Name: "Газ", Confidence: 1})
+		resp = Response{Categories: []Entity{Entity{Name: "Газ", Confidence: 1}}}
 	case "Отопление":
-		resp.Categories = append(resp.Categories, Entity{Name: "Отопление", Confidence: 1})
+		resp = Response{Categories: []Entity{Entity{Name: "Отопление", Confidence: 1}}}
 	case "Электричество":
-		resp.Categories = append(resp.Categories, Entity{Name: "Электричество", Confidence: 1})
+		resp = Response{Categories: []Entity{Entity{Name: "Электричество", Confidence: 1}}}
 	case "Канализация":
-		resp.Categories = append(resp.Categories, Entity{Name: "Канализация", Confidence: 1})
+		resp = Response{Categories: []Entity{Entity{Name: "Канализация", Confidence: 1}}}
 	}
+
 
 	return &resp, nil
 }
