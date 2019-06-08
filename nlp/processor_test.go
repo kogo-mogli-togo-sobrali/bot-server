@@ -37,6 +37,10 @@ func TestProcessor_ParseRequest(t *testing.T) {
 	assert.Equal(t, resp.Problems[0].Name, "нет света")
 	assert.Equal(t, len(resp.Categories), 1)
 	assert.Equal(t, resp.Categories[0].Name, "Электричество")
+
+	resp = getResponse("Газ")
+	assert.Equal(t, len(resp.Categories), 1)
+	assert.Equal(t, resp.Categories[0].Name, "Газ")
 }
 
 func TestMain(m *testing.M) {

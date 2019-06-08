@@ -56,5 +56,16 @@ func (p *Processor) ParseRequest(request string) (*Response, error) {
 		return nil, fmt.Errorf("failed to read response from the server: %v", bytes)
 	}
 
+	switch msg.Text {
+	case "Газ":
+		resp.Categories = append(resp.Categories, Entity{Name: "Газ", Confidence: 1})
+	case "Отопление":
+		resp.Categories = append(resp.Categories, Entity{Name: "Отопление", Confidence: 1})
+	case "Электричество":
+		resp.Categories = append(resp.Categories, Entity{Name: "Электричество", Confidence: 1})
+	case "Канализация":
+		resp.Categories = append(resp.Categories, Entity{Name: "Канализация", Confidence: 1})
+	}
+
 	return &resp, nil
 }
