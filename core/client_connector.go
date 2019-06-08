@@ -20,16 +20,17 @@ type ClientConnector struct {
 	RemoteAddress net.Addr
 	processor *nlp.Processor
 	session *ClientSession
+	server *Server
 }
 
 // NewClientConnector - create and return new client WS connection
-func NewClientConnector(w http.ResponseWriter, r *http.Request, p *nlp.Processor) (*ClientConnector, error) {
+func NewClientConnector(w http.ResponseWriter, r *http.Request, p *nlp.Processor, s *Server) (*ClientConnector, error) {
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to upgrade to WS protocol: %v", err)
 	}
 
-	c := &ClientConnector{ws, ws.RemoteAddr(), p, NewClientSession(p)}
+	c := &ClientConnector{ws, ws.RemoteAddr(), p, NewClientSession(p), s}
 
 	go c.readRequest()
 	return c, nil
@@ -43,12 +44,11 @@ func (c *ClientConnector) readRequest() {
 	for {
 		err := c.connection.ReadJSON(&message)
 		if err == io.EOF {
-			log.Printf("ClientConnector(%v): client disconnected", c.RemoteAddress)
 			break
 		}
 		if err != nil {
 			log.Printf("ClientConnector(%v): failed to read JSON request: %v", c.RemoteAddress, err)
-			continue
+			break
 		}
 
 		text := fmt.Sprintf("%v", message.Text)
@@ -63,6 +63,9 @@ func (c *ClientConnector) readRequest() {
 			c.session = NewClientSession(c.processor)
 		}
 	}
+
+	log.Printf("ClientConnector(%v): client disconnected", c.RemoteAddress)
+	c.server.OnClientDisconnected(c)
 }
 
 func findMostProbably(entities []nlp.Entity) (entity nlp.Entity) {
