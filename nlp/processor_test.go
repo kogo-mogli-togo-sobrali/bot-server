@@ -12,18 +12,31 @@ import (
 func TestProcessor_ParseRequest(t *testing.T) {
 	processor := NewProcessor()
 
-	req := "У меня прорвало трубу"
+	getResponse := func(req string) *Response {
+		resp, err := processor.ParseRequest(req)
+		if err != nil {
+			t.Errorf("ParseRequest with %v failed: %v", req, err)
+		}
 
-	resp, err := processor.ParseRequest(req)
-	if err != nil {
-		t.Errorf("ParseRequest with %v failed: %v", req, err)
+		return resp
 	}
 
-	assert.Equal(t, len(resp.Location), 0)
-	assert.Equal(t, len(resp.Subcategory), 1)
-	assert.Equal(t, resp.Subcategory[0].Name, "прорвало трубу")
-	assert.Equal(t, len(resp.Category), 1)
-	assert.Equal(t, resp.Category[0].Name, "Отопление")
+	resp := getResponse("У меня прорвало трубу")
+	assert.Equal(t, len(resp.Locations), 0)
+	assert.Equal(t, len(resp.Problems), 1)
+	assert.Equal(t, resp.Problems[0].Name, "прорвало трубу")
+	assert.Equal(t, len(resp.Categories), 1)
+	assert.Equal(t, resp.Categories[0].Name, "Отопление")
+
+	resp = getResponse("88005553535")
+	assert.Equal(t, len(resp.PhoneNumbers), 1)
+
+	resp = getResponse("Добрый вечер, меня зовут Александр Стешенко и у меня нет света")
+	assert.Equal(t, len(resp.Locations), 0)
+	assert.Equal(t, len(resp.Problems), 1)
+	assert.Equal(t, resp.Problems[0].Name, "нет света")
+	assert.Equal(t, len(resp.Categories), 1)
+	assert.Equal(t, resp.Categories[0].Name, "Электричество")
 }
 
 func TestMain(m *testing.M) {

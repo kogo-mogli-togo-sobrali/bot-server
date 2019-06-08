@@ -20,9 +20,12 @@ type Entity struct {
 }
 
 type Response struct {
-	Category []Entity    `json:"intent"`
-	Subcategory []Entity `json:"problem_kind"`
-	Location []Entity `json:"interior_location"`
+	Categories   []Entity `json:"intent"`
+	Problems     []Entity `json:"problem_kind"`
+	Locations    []Entity `json:"interior_location"`
+	PhoneNumbers []Entity `json:"phone_number"`
+	Addresses    []Entity `json:"address"`
+	Names        []Entity `json:"name"`
 }
 
 func NewProcessor() *Processor {

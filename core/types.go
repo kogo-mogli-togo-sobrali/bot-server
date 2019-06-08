@@ -7,4 +7,5 @@ type Message struct {
 
 type Answer struct {
 	Text string `json:"message"`
+	Options []string `json:"options"`
 }
