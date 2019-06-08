@@ -79,9 +79,16 @@ func (c *ClientSession) handleRequest(message Message) Answer {
 		}
 	}
 
+	categoriesGiving := map[string]string {
+		"Газ": "газу",
+		"Отопление": "отоплению",
+		"Электричество": "электричеству",
+		"Канализация": "канализации",
+	}
+
 	c.IsCompleted = true
 	return Answer{
-		Text: fmt.Sprintf(viper.GetString("strings.finalMessage"), c.Name, c.PhoneNumber),
+		Text: fmt.Sprintf(viper.GetString("strings.finalMessage"), c.Name, categoriesGiving[c.Category], c.PhoneNumber),
 	}
 }
 
