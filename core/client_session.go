@@ -57,7 +57,7 @@ func (c *ClientSession) handleRequest(message Message) Answer {
 	if c.Category == "" {
 		return Answer{
 			Text: viper.GetString("strings.chooseCategory"),
-			Options: viper.GetStringSlice("categories"),
+			Options: viper.GetStringSlice("common.categories"),
 		}
 	}
 
